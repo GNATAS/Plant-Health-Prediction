@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Health Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-success mb-4 shadow-sm">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">🌿 Plant Health Management System</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0 text-success">🌱 จัดการแปลงปลูก</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="addFieldForm">
+                            <div class="mb-2">
+                                <label class="form-label font-sm">ชื่อแปลง (Field Name)</label>
+                                <input type="text" id="fieldName" class="form-control" required
+                                    placeholder="เช่น แปลง A">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label font-sm">ชนิดพืช (Plant Type)</label>
+                                <select id="plantType" class="form-select" required>
+                                    <option value="" disabled selected>-- เลือกชนิดพืช --</option>
+                                    <option value="Spinach">Spinach (ผักโขม)</option>
+                                    <option value="Endive">Endive (ผักเอนไดฟ์)</option>
+                                    <option value="Lettuce">Lettuce (ผักกาดหอม)</option>
+                                    <option value="Kale">Kale (ผักเคล)</option>
+                                    <option value="Cabbage">Cabbage (กะหล่ำปลี)</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-outline-success w-100">➕ เพิ่มแปลงใหม่</button>
+                        </form>
+                        <hr>
+                        <h6 class="text-muted">รายการแปลงทั้งหมด:</h6>
+                        <ul id="fieldsList" class="list-group list-group-flush border rounded">
+                            <li class="list-group-item text-center text-muted">กำลังโหลด...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0 text-primary">📊 พยากรณ์สุขภาพพืช (Predict)</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="predictForm">
+                            <div class="mb-3 p-3 bg-light rounded border">
+                                <label class="form-label fw-bold text-dark">1. เลือกแปลงที่ต้องการบันทึกข้อมูล</label>
+                                <select id="fieldSelect" class="form-select border-primary" required>
+                                    <option value="">-- กรุณาเลือกแปลง --</option>
+                                </select>
+                            </div>
+
+                            <h6 class="border-bottom pb-2 mt-4 text-dark">2. กรอกค่าเซนเซอร์ (Sensor Data)</h6>
+                            <div class="row g-2">
+                                <div class="col-md-4">
+                                    <label class="form-label font-sm">Soil Moisture</label>
+                                    <input type="number" step="any" id="soilMoisture"
+                                        class="form-control form-control-sm" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label font-sm">Ambient Temp</label>
+                                    <input type="number" step="any" id="ambientTemp"
+                                        class="form-control form-control-sm" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label font-sm">Soil Temp</label>
+                                    <input type="number" step="any" id="soilTemp" class="form-control form-control-sm"
+                                        required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label font-sm">Humidity</label>
+                                    <input type="number" step="any" id="humidity" class="form-control form-control-sm"
+                                        required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label font-sm">Light Intensity</label>
+                                    <input type="number" step="any" id="lightIntensity"
+                                        class="form-control form-control-sm" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label font-sm">Soil pH</label>
+                                    <input type="number" step="any" id="soilPh" class="form-control form-control-sm"
+                                        required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label font-sm">Nitrogen (N)</label>
+                                    <input type="number" step="any" id="nitrogenLevel"
+                                        class="form-control form-control-sm" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label font-sm">Phosphorus (P)</label>
+                                    <input type="number" step="any" id="phosphorusLevel"
+                                        class="form-control form-control-sm" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label font-sm">Potassium (K)</label>
+                                    <input type="number" step="any" id="potassiumLevel"
+                                        class="form-control form-control-sm" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label font-sm">Chlorophyll Content</label>
+                                    <input type="number" step="any" id="chlorophyllContent"
+                                        class="form-control form-control-sm" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label font-sm">Electrochemical Signal</label>
+                                    <input type="number" step="any" id="electroSignal"
+                                        class="form-control form-control-sm" required>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 text-center">
+                                <button type="button" class="btn btn-secondary me-2" id="btnFillDummy">🎲
+                                    สุ่มข้อมูลทดสอบ</button>
+                                <button type="submit" class="btn btn-primary px-4">🧠 ทำนายผล (Predict)</button>
+                            </div>
+                        </form>
+
+                        <div id="resultArea" class="mt-4 d-none">
+                            <div class="alert alert-info text-center shadow-sm">
+                                <h4 class="mb-2">สถานะพืช: <span id="predictResultStatus" class="badge bg-dark"></span>
+                                </h4>
+                                <div id="predictProbabilities" class="text-muted small"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm mb-5">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-secondary">🕒 ประวัติการพยากรณ์</h5>
+                        <button id="btnRefreshHistory" class="btn btn-sm btn-outline-secondary">🔄 รีเฟรชข้อมูล</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>วันที่-เวลา</th>
+                                        <th>แปลงปลูก (Field)</th>
+                                        <th>Soil Moist. / Temp</th>
+                                        <th>N-P-K</th>
+                                        <th>ผลการพยากรณ์</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historyTableBody">
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-4">ยังไม่มีประวัติการทำนาย
+                                            หรือกำลังโหลดข้อมูล...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+
+</html>
