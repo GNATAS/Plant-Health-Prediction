@@ -1,0 +1,50 @@
+# ── Python ────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# ── Virtual Environments ──────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ── Jupyter Notebook ──────────────────────────────────────────
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# ── Saved Models ──────────────────────────────────────────────
+
+
+# ── Generated Plots / Output Images ──────────────────────────
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.pdf
+
+# ── Data Files (ถ้าไฟล์ใหญ่ไม่อยากขึ้น Git) ──────────────────
+# plant_health_data.csv   ← uncomment ถ้าไม่ต้อง track
+# *.csv
+
+# ── OS & Editor ───────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Misc ──────────────────────────────────────────────────────
+*.log
+*.tmp
+tmp/
+temp/
+catboost_info/
