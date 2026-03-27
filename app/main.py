@@ -4,7 +4,7 @@ from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import os
 
-from .database import engine, Base
+from app.database import engine, Base
 from .routers import fields, predictions
 
 # 🌟 คำสั่งนี้จะสร้างตารางในไฟล์ SQLite อัตโนมัติ หากยังไม่มีไฟล์ plant_health.db

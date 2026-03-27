@@ -70,8 +70,12 @@
                             <div class="row g-2">
                                 <div class="col-md-4">
                                     <label class="form-label font-sm">Soil Moisture</label>
-                                    <input type="number" step="any" id="soilMoisture"
-                                        class="form-control form-control-sm" required>
+                                    <select id="soilMoisture" class="form-select form-select-sm" required>
+                                        <option value="" disabled selected>-- เลือกระดับ --</option>
+                                        <option value="15">Dry</option>
+                                        <option value="25">Moist</option>
+                                        <option value="35">Wet</option>
+                                    </select>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label font-sm">Ambient Temp</label>
@@ -99,10 +103,15 @@
                                         required>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label font-sm">Nitrogen (N)</label>
-                                    <input type="number" step="any" id="nitrogenLevel"
-                                        class="form-control form-control-sm" required>
+                                    <label class="form-label font-sm">Nitrogen Level</label>
+                                    <select id="nitrogenLevel" class="form-select form-select-sm" required>
+                                        <option value="" disabled selected>-- เลือกระดับ --</option>
+                                        <option value="18"> Yellow</option>
+                                        <option value="20.5">Green</option>
+                                        <option value="30">Dark Green</option>
+                                    </select>
                                 </div>
+
                                 <div class="col-md-4">
                                     <label class="form-label font-sm">Phosphorus (P)</label>
                                     <input type="number" step="any" id="phosphorusLevel"
