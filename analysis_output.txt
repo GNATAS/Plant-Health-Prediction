@@ -1,0 +1,160 @@
+Exact values accuracy: 0.9917
+
+======================================================================
+  Config A: 3 Soil x 3 Nitrogen (Percentile P33/P67)
+======================================================================
+
+  Soil thresholds:     ['19.86', '30.15']
+  Soil reps:           ['15.05', '25.17', '34.97']
+  Nitrogen thresholds: ['23.30', '36.84']
+  Nitrogen reps:       ['16.94', '30.14', '43.53']
+
+  Accuracy: 0.8500  (drop from exact: 0.1417)
+
+  Prediction Table:
+                          Dry x          Yellow/Pale  (SM=15.05, NL=16.94)  ->  High Stress
+                          Dry x         Normal Green  (SM=15.05, NL=30.14)  ->  High Stress
+                          Dry x           Dark Green  (SM=15.05, NL=43.53)  ->  High Stress
+                        Moist x          Yellow/Pale  (SM=25.17, NL=16.94)  ->  Moderate Stress
+                        Moist x         Normal Green  (SM=25.17, NL=30.14)  ->  Moderate Stress
+                        Moist x           Dark Green  (SM=25.17, NL=43.53)  ->  Moderate Stress
+                          Wet x          Yellow/Pale  (SM=34.97, NL=16.94)  ->  Moderate Stress
+                          Wet x         Normal Green  (SM=34.97, NL=30.14)  ->  Healthy
+                          Wet x           Dark Green  (SM=34.97, NL=43.53)  ->  Healthy
+
+  Classification Report:
+                 precision    recall  f1-score   support
+
+        Healthy       1.00      0.88      0.94        60
+Moderate Stress       0.69      1.00      0.82        80
+    High Stress       1.00      0.71      0.83       100
+
+       accuracy                           0.85       240
+      macro avg       0.90      0.86      0.86       240
+   weighted avg       0.90      0.85      0.85       240
+
+
+======================================================================
+  Config B: 5 Soil x 3 Nitrogen
+======================================================================
+
+  Soil thresholds:     ['15.96', '22.48', '28.21', '33.93']
+  Soil reps:           ['13.22', '18.92', '25.17', '30.93', '37.32']
+  Nitrogen thresholds: ['23.30', '36.84']
+  Nitrogen reps:       ['16.94', '30.14', '43.53']
+
+  Accuracy: 0.7625  (drop from exact: 0.2292)
+
+  Prediction Table:
+                     Very Dry x          Yellow/Pale  (SM=13.22, NL=16.94)  ->  High Stress
+                     Very Dry x         Normal Green  (SM=13.22, NL=30.14)  ->  High Stress
+                     Very Dry x           Dark Green  (SM=13.22, NL=43.53)  ->  High Stress
+                          Dry x          Yellow/Pale  (SM=18.92, NL=16.94)  ->  High Stress
+                          Dry x         Normal Green  (SM=18.92, NL=30.14)  ->  High Stress
+                          Dry x           Dark Green  (SM=18.92, NL=43.53)  ->  High Stress
+                        Moist x          Yellow/Pale  (SM=25.17, NL=16.94)  ->  Moderate Stress
+                        Moist x         Normal Green  (SM=25.17, NL=30.14)  ->  Moderate Stress
+                        Moist x           Dark Green  (SM=25.17, NL=43.53)  ->  Moderate Stress
+                 Slightly Wet x          Yellow/Pale  (SM=30.93, NL=16.94)  ->  Moderate Stress
+                 Slightly Wet x         Normal Green  (SM=30.93, NL=30.14)  ->  Healthy
+                 Slightly Wet x           Dark Green  (SM=30.93, NL=43.53)  ->  Healthy
+                          Wet x          Yellow/Pale  (SM=37.32, NL=16.94)  ->  Moderate Stress
+                          Wet x         Normal Green  (SM=37.32, NL=30.14)  ->  Healthy
+                          Wet x           Dark Green  (SM=37.32, NL=43.53)  ->  Healthy
+
+  Classification Report:
+                 precision    recall  f1-score   support
+
+        Healthy       0.82      0.88      0.85        60
+Moderate Stress       0.64      0.66      0.65        80
+    High Stress       0.84      0.77      0.80       100
+
+       accuracy                           0.76       240
+      macro avg       0.76      0.77      0.77       240
+   weighted avg       0.77      0.76      0.76       240
+
+
+======================================================================
+  Config C: 3 Soil x 3 Nitrogen (Class-mean based)
+======================================================================
+
+  Soil thresholds:     ['22.32', '30.73']
+  Soil reps:           ['18.08', '26.56', '34.91']
+  Nitrogen thresholds: ['28.75', '32.66']
+  Nitrogen reps:       ['26.97', '30.52', '34.79']
+
+  Accuracy: 0.7917  (drop from exact: 0.2000)
+
+  Prediction Table:
+                          Dry x          Yellow/Pale  (SM=18.08, NL=26.97)  ->  High Stress
+                          Dry x         Normal Green  (SM=18.08, NL=30.52)  ->  High Stress
+                          Dry x           Dark Green  (SM=18.08, NL=34.79)  ->  High Stress
+                        Moist x          Yellow/Pale  (SM=26.56, NL=26.97)  ->  Moderate Stress
+                        Moist x         Normal Green  (SM=26.56, NL=30.52)  ->  Moderate Stress
+                        Moist x           Dark Green  (SM=26.56, NL=34.79)  ->  Moderate Stress
+                          Wet x          Yellow/Pale  (SM=34.91, NL=26.97)  ->  Healthy
+                          Wet x         Normal Green  (SM=34.91, NL=30.52)  ->  Healthy
+                          Wet x           Dark Green  (SM=34.91, NL=34.79)  ->  Healthy
+
+  Classification Report:
+                 precision    recall  f1-score   support
+
+        Healthy       0.74      0.88      0.80        60
+Moderate Stress       0.77      0.75      0.76        80
+    High Stress       0.86      0.77      0.81       100
+
+       accuracy                           0.79       240
+      macro avg       0.79      0.80      0.79       240
+   weighted avg       0.80      0.79      0.79       240
+
+
+======================================================================
+  Config D: 5 Soil x 5 Nitrogen (Fine-grained)
+======================================================================
+
+  Soil thresholds:     ['15.96', '22.48', '28.21', '33.93']
+  Soil reps:           ['13.22', '18.92', '25.17', '30.93', '37.32']
+  Nitrogen thresholds: ['18.11', '26.11', '33.51', '42.01']
+  Nitrogen reps:       ['14.44', '22.04', '30.14', '38.22', '46.39']
+
+  Accuracy: 0.8292  (drop from exact: 0.1625)
+
+  Prediction Table:
+                     Very Dry x          Very Yellow  (SM=13.22, NL=14.44)  ->  High Stress
+                     Very Dry x         Light Yellow  (SM=13.22, NL=22.04)  ->  High Stress
+                     Very Dry x         Normal Green  (SM=13.22, NL=30.14)  ->  High Stress
+                     Very Dry x                Green  (SM=13.22, NL=38.22)  ->  High Stress
+                     Very Dry x           Dark Green  (SM=13.22, NL=46.39)  ->  High Stress
+                          Dry x          Very Yellow  (SM=18.92, NL=14.44)  ->  High Stress
+                          Dry x         Light Yellow  (SM=18.92, NL=22.04)  ->  High Stress
+                          Dry x         Normal Green  (SM=18.92, NL=30.14)  ->  High Stress
+                          Dry x                Green  (SM=18.92, NL=38.22)  ->  High Stress
+                          Dry x           Dark Green  (SM=18.92, NL=46.39)  ->  High Stress
+                        Moist x          Very Yellow  (SM=25.17, NL=14.44)  ->  High Stress
+                        Moist x         Light Yellow  (SM=25.17, NL=22.04)  ->  Moderate Stress
+                        Moist x         Normal Green  (SM=25.17, NL=30.14)  ->  Moderate Stress
+                        Moist x                Green  (SM=25.17, NL=38.22)  ->  Moderate Stress
+                        Moist x           Dark Green  (SM=25.17, NL=46.39)  ->  Moderate Stress
+                 Slightly Wet x          Very Yellow  (SM=30.93, NL=14.44)  ->  High Stress
+                 Slightly Wet x         Light Yellow  (SM=30.93, NL=22.04)  ->  Healthy
+                 Slightly Wet x         Normal Green  (SM=30.93, NL=30.14)  ->  Healthy
+                 Slightly Wet x                Green  (SM=30.93, NL=38.22)  ->  Healthy
+                 Slightly Wet x           Dark Green  (SM=30.93, NL=46.39)  ->  Healthy
+                          Wet x          Very Yellow  (SM=37.32, NL=14.44)  ->  High Stress
+                          Wet x         Light Yellow  (SM=37.32, NL=22.04)  ->  Healthy
+                          Wet x         Normal Green  (SM=37.32, NL=30.14)  ->  Healthy
+                          Wet x                Green  (SM=37.32, NL=38.22)  ->  Healthy
+                          Wet x           Dark Green  (SM=37.32, NL=46.39)  ->  Healthy
+
+  Classification Report:
+                 precision    recall  f1-score   support
+
+        Healthy       0.80      1.00      0.89        60
+Moderate Stress       1.00      0.49      0.66        80
+    High Stress       0.79      1.00      0.88       100
+
+       accuracy                           0.83       240
+      macro avg       0.86      0.83      0.81       240
+   weighted avg       0.86      0.83      0.81       240
+
+
