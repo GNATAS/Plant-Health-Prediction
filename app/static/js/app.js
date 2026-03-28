@@ -2,129 +2,197 @@
 
 const API_BASE_URL = '/api';
 
-// เมื่อหน้าเว็บโหลดเสร็จ ให้ดึงข้อมูลแปลงปลูกมาแสดงทันที
 document.addEventListener('DOMContentLoaded', () => {
     loadFields();
 });
 
 // ==========================================
-// 1. ระบบจัดการแปลงปลูก (Field Management)
+// 1. ระบบจัดการหน้า (Navigation SPA)
 // ==========================================
+function switchTab(tabName) {
+    // รีเซ็ตปุ่ม Tab กลับเป็นสีลางๆ
+    document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+    // รีเซ็ตหน้าเนื้อหา ซ่อนให้หมด
+    document.getElementById('content-fields').classList.add('d-none');
+    document.getElementById('content-predict').classList.add('d-none');
+    document.getElementById('content-history').classList.add('d-none');
 
-// ฟังก์ชันดึงข้อมูลแปลงทั้งหมดมาแสดงที่ List และ Dropdown
+    // เปิดของใหม่ที่ถูกเลือก
+    document.getElementById(`tab-${tabName}`).classList.add('active');
+    document.getElementById(`content-${tabName}`).classList.remove('d-none');
+
+    // ถ้ากดเข้าหน้า History ให้เช็คเผื่อมีแปลงเลือกค้างไว้แล้วให้โหลด
+    if (tabName === 'history') {
+        const hId = document.getElementById('fieldSelectHistory').value;
+        if (hId) loadHistory(hId);
+    }
+}
+
+// ฟังก์ชันทางลัดสำหรับกระโดดไปหน้าตรวจความพร้อมของแปลงนี้
+function jumpToPredict(fieldId) {
+    switchTab('predict');
+    document.getElementById('fieldSelectPredict').value = fieldId;
+    
+    // รีเซ็ตแบบฟอร์มเดิมเผื่อมีขยะ
+    document.getElementById('soilMoisture').value = '';
+    document.getElementById('nitrogenLevel').value = '';
+    document.getElementById('resultArea').classList.add('d-none');
+}
+
+// ==========================================
+// 2. ระบบจัดการแปลง (Field Management)
+// ==========================================
 async function loadFields() {
     try {
         const response = await fetch(`${API_BASE_URL}/fields/`);
         const fields = await response.json();
 
-        const fieldsList = document.getElementById('fieldsList');
-        const fieldSelect = document.getElementById('fieldSelect');
+        const grid = document.getElementById('fieldsGrid');
+        const selPredict = document.getElementById('fieldSelectPredict');
+        const selHistory = document.getElementById('fieldSelectHistory');
 
-        // เคลียร์ข้อมูลเก่า
-        fieldsList.innerHTML = '';
-        fieldSelect.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกแปลง --</option>';
+        grid.innerHTML = '';
+        selPredict.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกแปลง --</option>';
+        selHistory.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกแปลง --</option>';
 
         if (fields.length === 0) {
-            fieldsList.innerHTML = '<li class="list-group-item text-center text-muted">ยังไม่มีแปลงปลูก</li>';
+            grid.innerHTML = '<div class="col-12 text-center text-muted py-4">ย้งไม่มีแปลงปลูก กดสร้างด้านบนได้เลย!</div>';
             return;
         }
 
-        // วนลูปเอาข้อมูลแปลงมาใส่ในหน้าเว็บ
+        const plantNameMap = {
+            "Spinach": "ปวยเล้ง (Spinach)",
+            "Lettuce": "ผักกาดหอม (Lettuce)",
+            "Kale": "ผักเคล (Kale)",
+            "Swiss Chard": "สวิสชาร์ด (Swiss Chard)",
+            "Bok Choy": "กวางตุ้งฮ่องเต้ (Bok Choy)",
+            "Watercress": "สลัดน้ำ (Watercress)",
+            "Arugula": "ผักร็อกเก็ต (Arugula)",
+            "Mustard Greens": "ผักกาดเขียว (Mustard Greens)",
+            "Collard Greens": "คะน้าฝรั่ง (Collard Greens)",
+            "Endive": "เอนไดฟ์ (Endive)"
+        };
+
         fields.forEach(field => {
-            // ใส่ใน List ด้านซ้าย
-            const li = document.createElement('li');
-            li.className = 'list-group-item d-flex justify-content-between align-items-center';
-            li.innerHTML = `<span><strong>${field.name}</strong> <small class="text-muted">(${field.plant_type})</small></span>`;
-            fieldsList.appendChild(li);
+            const thaiPlantName = plantNameMap[field.plant_type] || field.plant_type;
+            
+            // สร้างการ์ดแสดงแปลง
+            const col = document.createElement('div');
+            col.className = 'col-md-6';
+            col.innerHTML = `
+                <div class="card field-card shadow-sm border-success border-opacity-25">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1 text-success fw-bold">${field.name}</h6>
+                            <small class="text-muted">พืช: ${thaiPlantName}</small>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary" onclick="jumpToPredict(${field.id})">
+                            ตรวจสุขภาพ ➔
+                        </button>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(col);
 
-            // ใส่ใน Dropdown แบบฟอร์มทำนายผล
-            const option = document.createElement('option');
-            option.value = field.id;
-            option.textContent = `ID: ${field.id} - ${field.name} (${field.plant_type})`;
-            fieldSelect.appendChild(option);
+            // เติมเข้า Dropdown
+            selPredict.innerHTML += `<option value="${field.id}">${field.name} (${thaiPlantName})</option>`;
+            selHistory.innerHTML += `<option value="${field.id}">${field.name} (${thaiPlantName})</option>`;
         });
-
+        
+        // Render lucide icons for dynamically added elements
+        lucide.createIcons();
     } catch (error) {
         console.error('Error loading fields:', error);
     }
 }
 
-// จัดการเมื่อกดปุ่ม "เพิ่มแปลงใหม่"
 document.getElementById('addFieldForm').addEventListener('submit', async (e) => {
-    e.preventDefault(); // ป้องกันหน้าเว็บกระพริบรีเฟรช
-
-    const fieldName = document.getElementById('fieldName').value;
-    const plantType = document.getElementById('plantType').value;
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.disabled = true;
 
     try {
         const response = await fetch(`${API_BASE_URL}/fields/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: fieldName, plant_type: plantType })
+            body: JSON.stringify({ 
+                name: document.getElementById('fieldName').value, 
+                plant_type: document.getElementById('plantType').value 
+            })
         });
 
         if (response.ok) {
-            alert('✅ เพิ่มแปลงปลูกสำเร็จ!');
-            document.getElementById('addFieldForm').reset(); // ล้างฟอร์ม
-            loadFields(); // โหลดรายชื่อแปลงใหม่
+            const newField = await response.json();
+            document.getElementById('addFieldForm').reset();
+            await loadFields();
+            // วาร์ปไปหน้าทำนายอัตโนมัติ พร้อมล็อกเป้าแปลงใหม่
+            jumpToPredict(newField.id);
         } else {
             alert('❌ เกิดข้อผิดพลาดในการเพิ่มแปลง');
         }
     } catch (error) {
         console.error('Error adding field:', error);
+    } finally {
+        btn.disabled = false;
     }
 });
 
 // ==========================================
-// 2. ระบบพยากรณ์สุขภาพพืช (Prediction System)
+// 3. ระบบพยากรณ์สุขภาพ (Analyze)
 // ==========================================
-
-// ฟังก์ชันสุ่มตัวเลข (สำหรับปุ่มทดสอบ)
-function getRandomArbitrary(min, max) {
-    return (Math.random() * (max - min) + min).toFixed(2);
-}
-
-// จัดการเมื่อกดปุ่ม "สุ่มข้อมูลทดสอบ"
-document.getElementById('btnFillDummy').addEventListener('click', () => {
-    // ใส่ค่าสุ่มที่อยู่ในเกณฑ์ที่ Model ของคุณน่าจะรู้จัก
-    document.getElementById('soilMoisture').value = getRandomArbitrary(10, 40);
-    document.getElementById('ambientTemp').value = getRandomArbitrary(20, 35);
-    document.getElementById('soilTemp').value = getRandomArbitrary(18, 30);
-    document.getElementById('humidity').value = getRandomArbitrary(40, 80);
-    document.getElementById('lightIntensity').value = getRandomArbitrary(200, 800);
-    document.getElementById('soilPh').value = getRandomArbitrary(5.5, 7.5);
-    document.getElementById('nitrogenLevel').value = getRandomArbitrary(10, 50);
-    document.getElementById('phosphorusLevel').value = getRandomArbitrary(10, 50);
-    document.getElementById('potassiumLevel').value = getRandomArbitrary(10, 50);
-    document.getElementById('chlorophyllContent').value = getRandomArbitrary(20, 60);
-    document.getElementById('electroSignal').value = getRandomArbitrary(0.5, 2.0);
+// Toggle Pro Mode
+document.getElementById('proModeToggle').addEventListener('change', (e) => {
+    const isPro = e.target.checked;
+    const simpleDiv = document.getElementById('simpleModeInputs');
+    const advDiv = document.getElementById('advancedModeInputs');
+    
+    if (isPro) {
+        simpleDiv.classList.add('d-none');
+        advDiv.classList.remove('d-none');
+        document.getElementById('advSoilMoisture').required = true;
+        document.getElementById('advNitrogenLevel').required = true;
+        document.getElementById('soilMoisture').required = false;
+        document.getElementById('nitrogenLevel').required = false;
+    } else {
+        simpleDiv.classList.remove('d-none');
+        advDiv.classList.add('d-none');
+        document.getElementById('advSoilMoisture').required = false;
+        document.getElementById('advNitrogenLevel').required = false;
+        document.getElementById('soilMoisture').required = true;
+        document.getElementById('nitrogenLevel').required = true;
+    }
 });
 
-// จัดการเมื่อกดปุ่ม "ทำนายผล"
 document.getElementById('predictForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const fieldId = document.getElementById('fieldSelectPredict').value;
+    const btn = e.target.querySelector('button');
+    
+    // ดึงค่าตามโหมด (Simple หรือ Pro)
+    const isPro = document.getElementById('proModeToggle').checked;
+    const soil_val = isPro ? parseFloat(document.getElementById('advSoilMoisture').value) : parseFloat(document.getElementById('soilMoisture').value);
+    const nitro_val = isPro ? parseFloat(document.getElementById('advNitrogenLevel').value) : parseFloat(document.getElementById('nitrogenLevel').value);
 
-    const fieldId = document.getElementById('fieldSelect').value;
-    if (!fieldId) {
-        alert("กรุณาเลือกแปลงปลูกก่อนทำนายผล!");
-        return;
-    }
-
-    // รวบรวมข้อมูลจากฟอร์มให้ตรงกับ Schema ใน Backend
+    // รวบรวมข้อมูล! ส่งค่าที่หน้าจอถามแค่ 2 ค่า ส่วนที่เหลือยัด 0.0 ให้ระบบเก่าไม่แตก
     const payload = {
         field_id: parseInt(fieldId),
-        soil_moisture: parseFloat(document.getElementById('soilMoisture').value),
-        ambient_temperature: parseFloat(document.getElementById('ambientTemp').value),
-        soil_temperature: parseFloat(document.getElementById('soilTemp').value),
-        humidity: parseFloat(document.getElementById('humidity').value),
-        light_intensity: parseFloat(document.getElementById('lightIntensity').value),
-        soil_ph: parseFloat(document.getElementById('soilPh').value),
-        nitrogen_level: parseFloat(document.getElementById('nitrogenLevel').value),
-        phosphorus_level: parseFloat(document.getElementById('phosphorusLevel').value),
-        potassium_level: parseFloat(document.getElementById('potassiumLevel').value),
-        chlorophyll_content: parseFloat(document.getElementById('chlorophyllContent').value),
-        electrochemical_signal: parseFloat(document.getElementById('electroSignal').value)
+        soil_moisture: soil_val,
+        nitrogen_level: nitro_val,
+        
+        // ค่าโมเดลไม่ใช้ (ดัมมี่ให้ Schema ของ FastAPI พึงพอใจ)
+        ambient_temperature: 0.0,
+        soil_temperature: 0.0,
+        humidity: 0.0,
+        light_intensity: 0.0,
+        soil_ph: 0.0,
+        phosphorus_level: 0.0,
+        potassium_level: 0.0,
+        chlorophyll_content: 0.0,
+        electrochemical_signal: 0.0
     };
+
+    btn.innerHTML = '⏳ กำลังประมวลผล...';
+    btn.disabled = true;
 
     try {
         const response = await fetch(`${API_BASE_URL}/predictions/`, {
@@ -136,108 +204,104 @@ document.getElementById('predictForm').addEventListener('submit', async (e) => {
         if (response.ok) {
             const result = await response.json();
             showResult(result);
-            loadHistory(fieldId); // โหลดประวัติใหม่ทันที
+            // อัปเดต Dropdown ทันทีในแท็บ History ป้องกันผู้ใช้สลับไปแล้วงง
+            document.getElementById('fieldSelectHistory').value = fieldId;
         } else {
             const err = await response.json();
             alert(`❌ Error: ${err.detail}`);
         }
     } catch (error) {
         console.error('Prediction Error:', error);
-        alert('❌ เกิดข้อผิดพลาด ไม่สามารถเชื่อมต่อกับระบบทำนายผลได้');
+        alert('❌ ไม่สามารถเชื่อมต่อระบบวิเคราะห์ได้');
+    } finally {
+        btn.innerHTML = '🧠 วิเคราะห์สุขภาพทันที';
+        btn.disabled = false;
     }
 });
 
-// แสดงผลลัพธ์ในหน้าจอ
 function showResult(result) {
-    const resultArea = document.getElementById('resultArea');
-    const statusBadge = document.getElementById('predictResultStatus');
-    const probaDiv = document.getElementById('predictProbabilities');
-
-    // โชว์พื้นที่ผลลัพธ์
-    resultArea.classList.remove('d-none');
-
-    // ตั้งค่าสีป้าย (Badge) ตาม Status
-    statusBadge.textContent = result.predicted_status;
-    statusBadge.className = 'badge ';
-    if (result.predicted_code === 0) statusBadge.classList.add('bg-success'); // Healthy
-    else if (result.predicted_code === 1) statusBadge.classList.add('bg-warning', 'text-dark'); // Moderate
-    else statusBadge.classList.add('bg-danger'); // High Stress
-
-    // แสดงค่าความน่าจะเป็น (ถ้ามี)
-    probaDiv.innerHTML = '';
-    if (result.probabilities) {
-        const probs = JSON.parse(result.probabilities);
-        for (const [cls, prob] of Object.entries(probs)) {
-            const percent = (prob * 100).toFixed(2);
-            probaDiv.innerHTML += `<div>${cls}: <strong>${percent}%</strong></div>`;
-        }
+    const area = document.getElementById('resultArea');
+    const badge = document.getElementById('predictResultBadge');
+    
+    area.classList.remove('d-none');
+    
+    // ตกแต่งป้ายผลลัพธ์
+    badge.textContent = result.predicted_status;
+    badge.className = 'p-3 rounded-pill text-white fw-bold d-inline-block px-5 fs-4 shadow-sm mb-3 ';
+    
+    if (result.predicted_code === 0) {
+        badge.classList.add('bg-success');
+        badge.innerHTML = `<i data-lucide="check-circle" class="me-2 text-white"></i> ${result.predicted_status}`;
+    } else if (result.predicted_code === 1) {
+        badge.classList.add('bg-warning', 'text-dark');
+        badge.innerHTML = `<i data-lucide="alert-triangle" class="me-2 text-dark"></i> ${result.predicted_status}`;
+    } else {
+        badge.classList.add('bg-danger');
+        badge.innerHTML = `<i data-lucide="alert-octagon" class="me-2 text-white"></i> ${result.predicted_status}`;
     }
+    
+    lucide.createIcons();
 }
 
 // ==========================================
-// 3. ระบบประวัติการพยากรณ์ (History)
+// 4. ระบบประวัติ (History Tracker)
 // ==========================================
+function refreshHistory() {
+    const id = document.getElementById('fieldSelectHistory').value;
+    if(id) loadHistory(id);
+}
 
-// เมื่อเปลี่ยนแปลงใน Dropdown ให้โหลดประวัติของแปลงนั้นมาแสดง
-document.getElementById('fieldSelect').addEventListener('change', (e) => {
-    if (e.target.value) {
-        loadHistory(e.target.value);
-    }
-});
-
-// เมื่อกดปุ่มรีเฟรชประวัติ
-document.getElementById('btnRefreshHistory').addEventListener('click', () => {
-    const fieldId = document.getElementById('fieldSelect').value;
-    if (fieldId) {
-        loadHistory(fieldId);
-    } else {
-        alert("กรุณาเลือกแปลงปลูกในส่วนทำนายผลก่อน เพื่อดูประวัติ");
-    }
-});
-
-// ฟังก์ชันโหลดประวัติจาก API
 async function loadHistory(fieldId) {
     const tbody = document.getElementById('historyTableBody');
-    if (!tbody) return; // กันพลาดถ้าหาตารางไม่เจอ
+    if (!fieldId) return;
 
-    tbody.innerHTML = '<tr><td colspan="5" class="text-center">กำลังดึงประวัติ...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4">กำลังโหลดสมุดพก...</td></tr>';
 
     try {
         const response = await fetch(`${API_BASE_URL}/fields/${fieldId}`);
         const data = await response.json();
-        
-        // ข้อมูลที่คุณส่งมาอยู่ใน data.predictions
         const history = data.predictions; 
 
         if (!history || history.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">ยังไม่มีประวัติการทำนาย</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">แปลงนี้ยังไม่เคยวิเคราะห์สุขภาพ</td></tr>';
             return;
         }
 
-        tbody.innerHTML = ''; // ล้างแถว "กำลังโหลด" ออก
+        tbody.innerHTML = ''; 
 
-        // เรียงใหม่ไปเก่า
+        // เรียงจากการบันทึกล่าสุดขึ้นก่อน
         history.reverse().forEach(row => {
-            const dateStr = new Date(row.created_at).toLocaleString('th-TH');
+            const dateStr = new Date(row.created_at).toLocaleString('th-TH', { 
+                day: '2-digit', month: 'short', year: 'numeric', 
+                hour: '2-digit', minute: '2-digit' 
+            });
             
-            // กำหนดสี Badge
-            let colorClass = 'bg-secondary';
-            if (row.predicted_code === 0) colorClass = 'bg-success';
-            else if (row.predicted_code === 1) colorClass = 'bg-warning text-dark';
-            else if (row.predicted_code === 2) colorClass = 'bg-danger';
+            // ดึงค่ามาแปลงเป็นคำพูดให้ชื่นใจ พร้อมแสดงตัวเลขในวงเล็บ (Pro Mode support)
+            const soilLabel = row.soil_moisture <= 15 ? "แห้ง" : (row.soil_moisture >= 35 ? "แฉะ/ขัง" : "ชื้นปกติ");
+            const nitLabel = row.nitrogen_level <= 18 ? "เหลืองซีด" : (row.nitrogen_level >= 30 ? "เขียวเข้ม" : "เขียวปกติ");
+
+            const soilDisp = `${soilLabel} <small class="text-secondary font-monospace fw-bold ms-1" style="font-size:0.75rem;">(${Number(row.soil_moisture).toFixed(2)})</small>`;
+            const nitDisp = `${nitLabel} <small class="text-secondary font-monospace fw-bold ms-1" style="font-size:0.75rem;">(${Number(row.nitrogen_level).toFixed(2)})</small>`;
+
+            let color = 'secondary';
+            if (row.predicted_code === 0) color = 'success';
+            else if (row.predicted_code === 1) color = 'warning text-dark';
+            else if (row.predicted_code === 2) color = 'danger';
 
             const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid #f1f5f9';
             tr.innerHTML = `
-                <td class="small">${dateStr}</td>
-                <td><strong>${data.name}</strong></td>
-                <td colspan="2" class="text-center small text-muted">บันทึกสำเร็จ (ID: ${row.id})</td>
-                <td><span class="badge ${colorClass}">${row.predicted_status}</span></td>
+                <td class="small text-muted font-monospace">${dateStr}</td>
+                <td><span class="badge" style="background-color:#F8FAFC; color:#475569; border: 1px solid #E2E8F0;"><i data-lucide="droplet" style="width:12px; height:12px;" class="me-1"></i> ${soilDisp}</span></td>
+                <td><span class="badge" style="background-color:#F8FAFC; color:#475569; border: 1px solid #E2E8F0;"><i data-lucide="leaf" style="width:12px; height:12px;" class="me-1"></i> ${nitDisp}</span></td>
+                <td><span class="badge bg-${color} px-3 py-2 fw-bold shadow-sm">${row.predicted_status}</span></td>
             `;
             tbody.appendChild(tr);
         });
-
+        
+        lucide.createIcons();
     } catch (error) {
-        console.error('Error:', error);
-        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">โหลดประวัติไม่สำเร็จ</td></tr>';
+        console.error('Error loading history:', error);
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">ไม่สามารถโหลดข้อมูลได้</td></tr>';
     }
 }

@@ -4,189 +4,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plant Health Prediction</title>
+    <title>Plant Health Tracker</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS (Organic Biophilic Theme) -->
     <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
-<body class="bg-light">
-    <nav class="navbar navbar-dark bg-success mb-4 shadow-sm">
-        <div class="container">
-            <span class="navbar-brand mb-0 h1">🌿 Plant Health Management System</span>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark bg-primary mb-4 shadow-sm" style="background-color: #15803D !important;">
+        <div class="container hstack gap-2">
+            <span class="navbar-brand mb-0 h1 d-flex align-items-center">
+                <i data-lucide="leaf" class="text-white me-2"></i> Plant Health Tracker
+            </span>
         </div>
     </nav>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-header bg-white">
-                        <h5 class="mb-0 text-success">🌱 จัดการแปลงปลูก</h5>
-                    </div>
-                    <div class="card-body">
-                        <form id="addFieldForm">
-                            <div class="mb-2">
-                                <label class="form-label font-sm">ชื่อแปลง (Field Name)</label>
-                                <input type="text" id="fieldName" class="form-control" required
-                                    placeholder="เช่น แปลง A">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label font-sm">ชนิดพืช (Plant Type)</label>
-                                <select id="plantType" class="form-select" required>
-                                    <option value="" disabled selected>-- เลือกชนิดพืช --</option>
-                                    <option value="Spinach">Spinach (ผักโขม)</option>
-                                    <option value="Endive">Endive (ผักเอนไดฟ์)</option>
-                                    <option value="Lettuce">Lettuce (ผักกาดหอม)</option>
-                                    <option value="Kale">Kale (ผักเคล)</option>
-                                    <option value="Cabbage">Cabbage (กะหล่ำปลี)</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-outline-success w-100">➕ เพิ่มแปลงใหม่</button>
-                        </form>
-                        <hr>
-                        <h6 class="text-muted">รายการแปลงทั้งหมด:</h6>
-                        <ul id="fieldsList" class="list-group list-group-flush border rounded">
-                            <li class="list-group-item text-center text-muted">กำลังโหลด...</li>
-                        </ul>
-                    </div>
+    <div class="container mb-5" style="max-width: 800px;">
+        <!-- Navigation Menu -->
+        <ul class="nav nav-pills nav-justified mb-4 shadow-sm">
+            <li class="nav-item">
+                <a class="nav-link active py-3" href="#" id="tab-fields" onclick="switchTab('fields')">
+                    <i data-lucide="map"></i> จัดการแปลง
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link py-3" href="#" id="tab-predict" onclick="switchTab('predict')">
+                    <i data-lucide="test-tube"></i> ตรวจสุขภาพ
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link py-3" href="#" id="tab-history" onclick="switchTab('history')">
+                    <i data-lucide="clipboard-list"></i> ประวัติย้อนหลัง
+                </a>
+            </li>
+        </ul>
+
+        <!-- โซนที่ 1: จัดการแปลง -->
+        <div id="content-fields" class="tab-content p-4">
+            <h5 class="text-primary mb-4 d-flex align-items-center">
+                <i data-lucide="sprout"></i> เพิ่มแปลงปลูกใหม่
+            </h5>
+            <form id="addFieldForm" class="row g-3 align-items-end mb-5 bg-light p-4 rounded border-0">
+                <div class="col-md-5">
+                    <label class="form-label font-sm fw-bold">ชื่อแปลง (Name)</label>
+                    <input type="text" id="fieldName" class="form-control" placeholder="เช่น แปลงผักกาดหลังบ้าน" required>
                 </div>
-            </div>
-
-            <div class="col-md-8 mb-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-header bg-white">
-                        <h5 class="mb-0 text-primary">📊 พยากรณ์สุขภาพพืช (Predict)</h5>
-                    </div>
-                    <div class="card-body">
-                        <form id="predictForm">
-                            <div class="mb-3 p-3 bg-light rounded border">
-                                <label class="form-label fw-bold text-dark">1. เลือกแปลงที่ต้องการบันทึกข้อมูล</label>
-                                <select id="fieldSelect" class="form-select border-primary" required>
-                                    <option value="">-- กรุณาเลือกแปลง --</option>
-                                </select>
-                            </div>
-
-                            <h6 class="border-bottom pb-2 mt-4 text-dark">2. กรอกค่าเซนเซอร์ (Sensor Data)</h6>
-                            <div class="row g-2">
-                                <div class="col-md-4">
-                                    <label class="form-label font-sm">Soil Moisture</label>
-                                    <select id="soilMoisture" class="form-select form-select-sm" required>
-                                        <option value="" disabled selected>-- เลือกระดับ --</option>
-                                        <option value="15">Dry</option>
-                                        <option value="25">Moist</option>
-                                        <option value="35">Wet</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label font-sm">Ambient Temp</label>
-                                    <input type="number" step="any" id="ambientTemp"
-                                        class="form-control form-control-sm" required>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label font-sm">Soil Temp</label>
-                                    <input type="number" step="any" id="soilTemp" class="form-control form-control-sm"
-                                        required>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label font-sm">Humidity</label>
-                                    <input type="number" step="any" id="humidity" class="form-control form-control-sm"
-                                        required>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label font-sm">Light Intensity</label>
-                                    <input type="number" step="any" id="lightIntensity"
-                                        class="form-control form-control-sm" required>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label font-sm">Soil pH</label>
-                                    <input type="number" step="any" id="soilPh" class="form-control form-control-sm"
-                                        required>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label font-sm">Nitrogen Level</label>
-                                    <select id="nitrogenLevel" class="form-select form-select-sm" required>
-                                        <option value="" disabled selected>-- เลือกระดับ --</option>
-                                        <option value="18"> Yellow</option>
-                                        <option value="20.5">Green</option>
-                                        <option value="30">Dark Green</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label class="form-label font-sm">Phosphorus (P)</label>
-                                    <input type="number" step="any" id="phosphorusLevel"
-                                        class="form-control form-control-sm" required>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label font-sm">Potassium (K)</label>
-                                    <input type="number" step="any" id="potassiumLevel"
-                                        class="form-control form-control-sm" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label font-sm">Chlorophyll Content</label>
-                                    <input type="number" step="any" id="chlorophyllContent"
-                                        class="form-control form-control-sm" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label font-sm">Electrochemical Signal</label>
-                                    <input type="number" step="any" id="electroSignal"
-                                        class="form-control form-control-sm" required>
-                                </div>
-                            </div>
-
-                            <div class="mt-4 text-center">
-                                <button type="button" class="btn btn-secondary me-2" id="btnFillDummy">🎲
-                                    สุ่มข้อมูลทดสอบ</button>
-                                <button type="submit" class="btn btn-primary px-4">🧠 ทำนายผล (Predict)</button>
-                            </div>
-                        </form>
-
-                        <div id="resultArea" class="mt-4 d-none">
-                            <div class="alert alert-info text-center shadow-sm">
-                                <h4 class="mb-2">สถานะพืช: <span id="predictResultStatus" class="badge bg-dark"></span>
-                                </h4>
-                                <div id="predictProbabilities" class="text-muted small"></div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-md-4">
+                    <label class="form-label font-sm fw-bold">พืชที่ปลูก (Plant Type)</label>
+                    <select id="plantType" class="form-select" required>
+                        <option value="" disabled selected>-- เลือกพืชที่ปลูก --</option>
+                        <option value="Spinach">ปวยเล้ง (Spinach)</option>
+                        <option value="Lettuce">ผักกาดหอม (Lettuce)</option>
+                        <option value="Kale">ผักเคล (Kale)</option>
+                        <option value="Swiss Chard">สวิสชาร์ด (Swiss Chard)</option>
+                        <option value="Bok Choy">กวางตุ้งฮ่องเต้ (Bok Choy)</option>
+                        <option value="Watercress">สลัดน้ำ (Watercress)</option>
+                        <option value="Arugula">ผักร็อกเก็ต (Arugula)</option>
+                        <option value="Mustard Greens">ผักกาดเขียว (Mustard Greens)</option>
+                        <option value="Collard Greens">คะน้าฝรั่ง (Collard Greens)</option>
+                        <option value="Endive">เอนไดฟ์ (Endive)</option>
+                    </select>
                 </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-success w-100">
+                        <i data-lucide="plus-circle"></i> สร้างแปลง
+                    </button>
+                </div>
+            </form>
+
+            <h6 class="text-muted border-bottom pb-2 mb-4 d-flex align-items-center">
+                <i data-lucide="layout-grid"></i> รายการแปลงของคุณ
+            </h6>
+            <div id="fieldsGrid" class="row g-4">
+                <div class="col-12 text-center text-muted py-3">กำลังโหลดข้อมูล...</div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-12">
-                <div class="card shadow-sm mb-5">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0 text-secondary">🕒 ประวัติการพยากรณ์</h5>
-                        <button id="btnRefreshHistory" class="btn btn-sm btn-outline-secondary">🔄 รีเฟรชข้อมูล</button>
+        <!-- โซนที่ 2: วิเคราะห์สุขภาพ -->
+        <div id="content-predict" class="tab-content p-4 d-none">
+            <h4 class="text-primary mb-4 text-center d-flex align-items-center justify-content-center">
+                <i data-lucide="stethoscope"></i> ประเมินสุขภาพพืช
+            </h4>
+            
+            <form id="predictForm" class="mx-auto" style="max-width: 550px;">
+                <div class="mb-4 p-4 rounded" style="background-color: #F8FAFC; border: 1px solid #E2E8F0;">
+                    <label class="form-label fw-bold text-dark d-flex align-items-center">
+                        <i data-lucide="map-pin"></i> 1. เลือกแปลงที่ต้องการตรวจ
+                    </label>
+                    <select id="fieldSelectPredict" class="form-select form-select-lg mt-2" required>
+                        <option value="">-- กรุณาเลือกแปลง --</option>
+                    </select>
+                </div>
+
+                <div class="mb-5 p-4 rounded position-relative" style="background-color: #F8FAFC; border: 1px solid #E2E8F0;">
+                    
+                    <!-- Header with Pro Mode Toggle -->
+                    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                        <label class="form-label fw-bold text-dark mb-0 d-flex align-items-center m-0">
+                            <i data-lucide="eye"></i> 2. ระบุสภาพปัจจุบัน
+                        </label>
+                        
+                        <div class="form-check form-switch m-0 d-flex align-items-center">
+                            <input class="form-check-input" type="checkbox" role="switch" id="proModeToggle" style="width: 36px; height: 18px; margin-top:0; cursor: pointer;">
+                            <label class="form-check-label ms-2 font-sm fw-bold text-secondary d-flex align-items-center" for="proModeToggle" style="cursor: pointer;">
+                                <i data-lucide="sliders-horizontal" style="width: 14px; height: 14px;" class="me-1"></i> Pro Mode
+                            </label>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>วันที่-เวลา</th>
-                                        <th>แปลงปลูก (Field)</th>
-                                        <th>Soil Moist. / Temp</th>
-                                        <th>N-P-K</th>
-                                        <th>ผลการพยากรณ์</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="historyTableBody">
-                                    <tr>
-                                        <td colspan="5" class="text-center text-muted py-4">ยังไม่มีประวัติการทำนาย
-                                            หรือกำลังโหลดข้อมูล...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+
+                    <!-- Simple Mode (Dropdowns) -->
+                    <div id="simpleModeInputs">
+                        <div class="mb-4">
+                            <label class="form-label text-secondary fw-bold d-flex align-items-center">
+                                <i data-lucide="droplets" class="text-primary"></i> สภาพหน้าดิน (มองด้วยตาเปล่า)
+                            </label>
+                            <select id="soilMoisture" class="form-select form-select-lg" required>
+                                <option value="" disabled selected>-- ประเมินความชื้นดิน --</option>
+                                <option value="15">แห้งแตกระแหง (Dry)</option>
+                                <option value="25">ชื้นกำลังดี (Moist)</option>
+                                <option value="35">แฉะหรือน้ำขัง (Wet)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="form-label text-secondary fw-bold d-flex align-items-center">
+                                <i data-lucide="leaf" class="text-success"></i> สีใบไม้สำรวจเจอ (มองด้วยตาเปล่า)
+                            </label>
+                            <select id="nitrogenLevel" class="form-select form-select-lg" required>
+                                <option value="" disabled selected>-- ประเมินสีใบ --</option>
+                                <option value="18">ใบสีเหลืองซีด (Yellow/Pale / Low N)</option>
+                                <option value="20.5">ใบสีเขียวปกติ (Normal Green)</option>
+                                <option value="30">ใบสีเขียวเข้มมาก (Dark Green / High N)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Mode (Number Inputs) -->
+                    <div id="advancedModeInputs" class="d-none">
+                        <div class="mb-4">
+                            <label class="form-label text-secondary fw-bold d-flex align-items-center">
+                                <i data-lucide="droplets" class="text-primary"></i> ค่าความชื้นในดิน (Soil Moisture %)
+                            </label>
+                            <input type="number" step="0.01" id="advSoilMoisture" class="form-control form-control-lg font-monospace text-primary fw-bold" placeholder="เช่น 25.50">
+                        </div>
+
+                        <div>
+                            <label class="form-label text-secondary fw-bold d-flex align-items-center">
+                                <i data-lucide="cpu" class="text-success"></i> ค่าขั้วประจุเซ็นเซอร์ไนโตรเจน (mg/L)
+                            </label>
+                            <input type="number" step="0.01" id="advNitrogenLevel" class="form-control form-control-lg font-monospace text-success fw-bold" placeholder="เช่น 20.50">
                         </div>
                     </div>
                 </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold shadow-sm d-flex align-items-center justify-content-center">
+                    <i data-lucide="cpu" class="me-2"></i> วิเคราะห์สุขภาพทันที
+                </button>
+            </form>
+
+            <!-- พื้นที่แสดงผลการวิเคราะห์ -->
+            <div id="resultArea" class="mt-5 d-none text-center">
+                <hr class="mb-4" style="opacity: 0.1;">
+                <h4 class="mb-3 text-secondary">ผลการประเมิน</h4>
+                <div id="predictResultBadge" class="p-3 rounded-pill text-white fw-bold d-inline-flex align-items-center px-4 fs-4 mb-3">
+                    <!-- Text injected by JS -->
+                </div>
+                
+                <p class="text-muted font-sm mb-4"><i data-lucide="check-circle" class="text-success" style="width:16px; height:16px;"></i> บันทึกผลประเมินลงฐานข้อมูลแล้ว</p>
+                <button type="button" class="btn btn-outline-primary" onclick="switchTab('history')">
+                    <i data-lucide="list"></i> ดูประวัติแปลงนี้
+                </button>
             </div>
         </div>
+
+        <!-- โซนที่ 3: ประวัติย้อนหลัง -->
+        <div id="content-history" class="tab-content p-4 d-none">
+            <h5 class="text-primary mb-4 d-flex justify-content-between align-items-center">
+                <span class="d-flex align-items-center"><i data-lucide="clipboard-list"></i> สมุดพกประวัติสุขภาพ</span>
+                <button onclick="refreshHistory()" class="btn btn-sm btn-outline-primary">
+                    <i data-lucide="refresh-cw"></i> โหลดใหม่
+                </button>
+            </h5>
+            
+            <div class="mb-4 p-4 rounded bg-light border-0">
+                <label class="form-label fw-bold text-dark">เลือกแปลงเพื่อดูผลย้อนหลัง:</label>
+                <select id="fieldSelectHistory" class="form-select form-select-lg" onchange="loadHistory(this.value)">
+                    <option value="">-- กรุณาเลือกแปลง --</option>
+                </select>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-borderless align-middle mb-0">
+                    <thead style="background-color: #e2e8f0; border-radius: 12px;">
+                        <tr>
+                            <th class="rounded-start">วันที่บันทึก</th>
+                            <th>สภาพดิน</th>
+                            <th>สีใบไม้</th>
+                            <th class="rounded-end">ผลลัพธ์โมเดล</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody" style="background-color: white;">
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-5">
+                                <i data-lucide="inbox" style="width: 48px; height: 48px; opacity: 0.3;" class="mb-3"></i><br>
+                                กรุณาเลือกแปลงเพื่อดูประวัติ
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
     </div>
 
     <script src="/static/js/app.js"></script>
+    <!-- Initialize Lucide Icons initially -->
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
-
 </html>
