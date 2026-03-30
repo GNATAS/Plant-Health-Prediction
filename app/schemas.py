@@ -39,6 +39,8 @@ class PredictionResponse(BaseModel):
     predicted_code: int
     probabilities: Optional[str] = None
     created_at: datetime
+    soil_moisture: float
+    nitrogen_level: float
 
     class Config:
         from_attributes = True

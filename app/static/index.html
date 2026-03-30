@@ -51,7 +51,8 @@
             <form id="addFieldForm" class="row g-3 align-items-end mb-5 bg-light p-4 rounded border-0">
                 <div class="col-md-5">
                     <label class="form-label font-sm fw-bold">ชื่อแปลง (Name)</label>
-                    <input type="text" id="fieldName" class="form-control" placeholder="เช่น แปลงผักกาดหลังบ้าน" required>
+                    <input type="text" id="fieldName" class="form-control" placeholder="เช่น แปลงผักกาดหลังบ้าน"
+                        required>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label font-sm fw-bold">พืชที่ปลูก (Plant Type)</label>
@@ -89,7 +90,7 @@
             <h4 class="text-primary mb-4 text-center d-flex align-items-center justify-content-center">
                 <i data-lucide="stethoscope"></i> ประเมินสุขภาพพืช
             </h4>
-            
+
             <form id="predictForm" class="mx-auto" style="max-width: 550px;">
                 <div class="mb-4 p-4 rounded" style="background-color: #F8FAFC; border: 1px solid #E2E8F0;">
                     <label class="form-label fw-bold text-dark d-flex align-items-center">
@@ -100,18 +101,23 @@
                     </select>
                 </div>
 
-                <div class="mb-5 p-4 rounded position-relative" style="background-color: #F8FAFC; border: 1px solid #E2E8F0;">
-                    
+                <div class="mb-5 p-4 rounded position-relative"
+                    style="background-color: #F8FAFC; border: 1px solid #E2E8F0;">
+
                     <!-- Header with Pro Mode Toggle -->
                     <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
                         <label class="form-label fw-bold text-dark mb-0 d-flex align-items-center m-0">
                             <i data-lucide="eye"></i> 2. ระบุสภาพปัจจุบัน
                         </label>
-                        
+
                         <div class="form-check form-switch m-0 d-flex align-items-center">
-                            <input class="form-check-input" type="checkbox" role="switch" id="proModeToggle" style="width: 36px; height: 18px; margin-top:0; cursor: pointer;">
-                            <label class="form-check-label ms-2 font-sm fw-bold text-secondary d-flex align-items-center" for="proModeToggle" style="cursor: pointer;">
-                                <i data-lucide="sliders-horizontal" style="width: 14px; height: 14px;" class="me-1"></i> Pro Mode
+                            <input class="form-check-input" type="checkbox" role="switch" id="proModeToggle"
+                                style="width: 36px; height: 18px; margin-top:0; cursor: pointer;">
+                            <label
+                                class="form-check-label ms-2 font-sm fw-bold text-secondary d-flex align-items-center"
+                                for="proModeToggle" style="cursor: pointer;">
+                                <i data-lucide="sliders-horizontal" style="width: 14px; height: 14px;" class="me-1"></i>
+                                Pro Mode
                             </label>
                         </div>
                     </div>
@@ -120,7 +126,7 @@
                     <div id="simpleModeInputs">
                         <div class="mb-4">
                             <label class="form-label text-secondary fw-bold d-flex align-items-center">
-                                <i data-lucide="droplets" class="text-primary"></i> สภาพหน้าดิน (มองด้วยตาเปล่า)
+                                <i data-lucide="droplets" class="text-primary"></i> สภาพหน้าดิน
                             </label>
                             <select id="soilMoisture" class="form-select form-select-lg" required>
                                 <option value="" disabled selected>-- ประเมินความชื้นดิน --</option>
@@ -132,13 +138,13 @@
 
                         <div>
                             <label class="form-label text-secondary fw-bold d-flex align-items-center">
-                                <i data-lucide="leaf" class="text-success"></i> สีใบไม้สำรวจเจอ (มองด้วยตาเปล่า)
+                                <i data-lucide="leaf" class="text-success"></i> สีใบไม้สำรวจเจอ
                             </label>
                             <select id="nitrogenLevel" class="form-select form-select-lg" required>
                                 <option value="" disabled selected>-- ประเมินสีใบ --</option>
-                                <option value="18">ใบสีเหลืองซีด (Yellow/Pale / Low N)</option>
-                                <option value="20.5">ใบสีเขียวปกติ (Normal Green)</option>
-                                <option value="30">ใบสีเขียวเข้มมาก (Dark Green / High N)</option>
+                                <option value="18">ใบสีเหลืองซีด (Yellow/Pale)</option>
+                                <option value="20.5">ใบสีเขียวอ่อน (Light Green)</option>
+                                <option value="30">ใบสีเขียวปกติ (Normal Green)</option>
                             </select>
                         </div>
                     </div>
@@ -149,19 +155,24 @@
                             <label class="form-label text-secondary fw-bold d-flex align-items-center">
                                 <i data-lucide="droplets" class="text-primary"></i> ค่าความชื้นในดิน (Soil Moisture %)
                             </label>
-                            <input type="number" step="0.01" id="advSoilMoisture" class="form-control form-control-lg font-monospace text-primary fw-bold" placeholder="เช่น 25.50">
+                            <input type="number" step="0.01" id="advSoilMoisture"
+                                class="form-control form-control-lg font-monospace text-primary fw-bold"
+                                placeholder="เช่น 25.50">
                         </div>
 
                         <div>
                             <label class="form-label text-secondary fw-bold d-flex align-items-center">
                                 <i data-lucide="cpu" class="text-success"></i> ค่าขั้วประจุเซ็นเซอร์ไนโตรเจน (mg/L)
                             </label>
-                            <input type="number" step="0.01" id="advNitrogenLevel" class="form-control form-control-lg font-monospace text-success fw-bold" placeholder="เช่น 20.50">
+                            <input type="number" step="0.01" id="advNitrogenLevel"
+                                class="form-control form-control-lg font-monospace text-success fw-bold"
+                                placeholder="เช่น 20.50">
                         </div>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold shadow-sm d-flex align-items-center justify-content-center">
+                <button type="submit"
+                    class="btn btn-primary btn-lg w-100 fw-bold shadow-sm d-flex align-items-center justify-content-center">
                     <i data-lucide="cpu" class="me-2"></i> วิเคราะห์สุขภาพทันที
                 </button>
             </form>
@@ -170,11 +181,24 @@
             <div id="resultArea" class="mt-5 d-none text-center">
                 <hr class="mb-4" style="opacity: 0.1;">
                 <h4 class="mb-3 text-secondary">ผลการประเมิน</h4>
-                <div id="predictResultBadge" class="p-3 rounded-pill text-white fw-bold d-inline-flex align-items-center px-4 fs-4 mb-3">
+                <div id="predictResultBadge"
+                    class="p-3 rounded-pill text-white fw-bold d-inline-flex align-items-center px-4 fs-4 mb-3">
                     <!-- Text injected by JS -->
                 </div>
-                
-                <p class="text-muted font-sm mb-4"><i data-lucide="check-circle" class="text-success" style="width:16px; height:16px;"></i> บันทึกผลประเมินลงฐานข้อมูลแล้ว</p>
+
+                <!-- Actionable Insights -->
+                <div id="suggestionBox" class="text-start mx-auto mb-4 d-none p-4 rounded shadow-sm"
+                    style="max-width: 500px; background-color: #f1f8ff; border-left: 5px solid #0d6efd;">
+                    <h6 class="fw-bold text-dark border-bottom pb-2 mb-3"><i data-lucide="lightbulb"
+                            class="text-warning"></i> คำแนะนำการดูแล (Actionable Insights)</h6>
+                    <ul id="suggestionList" class="mb-0 text-secondary"
+                        style="font-size: 0.95rem; list-style-type: none; padding-left: 0;">
+                        <!-- Text injected by JS -->
+                    </ul>
+                </div>
+
+                <p class="text-muted font-sm mb-4"><i data-lucide="check-circle" class="text-success"
+                        style="width:16px; height:16px;"></i> บันทึกผลประเมินลงฐานข้อมูลแล้ว</p>
                 <button type="button" class="btn btn-outline-primary" onclick="switchTab('history')">
                     <i data-lucide="list"></i> ดูประวัติแปลงนี้
                 </button>
@@ -189,7 +213,7 @@
                     <i data-lucide="refresh-cw"></i> โหลดใหม่
                 </button>
             </h5>
-            
+
             <div class="mb-4 p-4 rounded bg-light border-0">
                 <label class="form-label fw-bold text-dark">เลือกแปลงเพื่อดูผลย้อนหลัง:</label>
                 <select id="fieldSelectHistory" class="form-select form-select-lg" onchange="loadHistory(this.value)">
@@ -210,7 +234,8 @@
                     <tbody id="historyTableBody" style="background-color: white;">
                         <tr>
                             <td colspan="4" class="text-center text-muted py-5">
-                                <i data-lucide="inbox" style="width: 48px; height: 48px; opacity: 0.3;" class="mb-3"></i><br>
+                                <i data-lucide="inbox" style="width: 48px; height: 48px; opacity: 0.3;"
+                                    class="mb-3"></i><br>
                                 กรุณาเลือกแปลงเพื่อดูประวัติ
                             </td>
                         </tr>
@@ -218,13 +243,14 @@
                 </table>
             </div>
         </div>
-        
+
     </div>
 
-    <script src="/static/js/app.js"></script>
+    <script src="/static/js/app.js?v=2"></script>
     <!-- Initialize Lucide Icons initially -->
     <script>
         lucide.createIcons();
     </script>
 </body>
+
 </html>

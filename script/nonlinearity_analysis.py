@@ -22,9 +22,9 @@ from sklearn.preprocessing import StandardScaler, LabelEncoder, MinMaxScaler
 from sklearn.decomposition import PCA
 
 # ── Config ──────────────────────────────────────────────────────────────────
-DARK_BG     = '#1e1e2e'
-PANEL_BG    = '#2a2a3e'
-TEXT_COLOR  = 'white'
+DARK_BG     = 'white'
+PANEL_BG    = 'white'
+TEXT_COLOR  = 'black'
 GRID_COLOR  = '#444'
 CLASS_ORDER  = ['Healthy', 'Moderate Stress', 'High Stress']
 CLASS_COLORS = {'Healthy': '#4CAF50', 'Moderate Stress': '#FFA726', 'High Stress': '#EF5350'}
@@ -43,7 +43,7 @@ ALL_FEATURES = [
 # ── Load data ────────────────────────────────────────────────────────────────
 import os
 script_dir = os.path.dirname(os.path.abspath(__file__))
-csv_path   = os.path.join(script_dir, 'data', 'plant_health_data.csv')
+csv_path   = "D:/CS/Datamining/data/plant_health_data.csv"
 df = pd.read_csv(csv_path)
 print(f"Data loaded: {df.shape}")
 print(df['Plant_Health_Status'].value_counts())

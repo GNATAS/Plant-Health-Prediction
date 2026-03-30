@@ -1,11 +1,14 @@
 import numpy as np
 import joblib
 import pandas as pd
+import os
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import train_test_split
 
-model = joblib.load('saved_models/best_model_exp2_feat_sel_decision_tree.pkl')
-scaler = joblib.load('saved_models/scaler.pkl')
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+model = joblib.load(os.path.join(BASE_DIR, 'saved_models', 'best_model_exp2_feat_sel_decision_tree.pkl'))
+scaler = joblib.load(os.path.join(BASE_DIR, 'saved_models', 'scaler.pkl'))
 
 AF = ['Plant_ID','Soil_Moisture','Ambient_Temperature','Soil_Temperature',
       'Humidity','Light_Intensity','Soil_pH','Nitrogen_Level',
@@ -13,7 +16,7 @@ AF = ['Plant_ID','Soil_Moisture','Ambient_Temperature','Soil_Temperature',
 SI = [AF.index('Soil_Moisture'), AF.index('Nitrogen_Level')]
 L = {0:'Healthy', 1:'Moderate Stress', 2:'High Stress'}
 
-df = pd.read_csv('data/plant_health_data.csv')
+df = pd.read_csv(os.path.join(BASE_DIR, 'data', 'plant_health_data.csv'))
 df['label'] = df['Plant_Health_Status'].map({'High Stress':2,'Moderate Stress':1,'Healthy':0})
 dw = df.drop(['Timestamp','Plant_Health_Status','Plant_Name'], axis=1)
 X = dw.drop(columns=['label'])
@@ -106,7 +109,8 @@ for lo, hi in bins_nl:
     subset = df[(df.Nitrogen_Level > lo) & (df.Nitrogen_Level <= hi)].Nitrogen_Level
     nl_reps_5.append(subset.median())
 
-with open('analysis_output.txt', 'w', encoding='utf-8') as f:
+out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'analysis_output.txt')
+with open(out_path, 'w', encoding='utf-8') as f:
     f.write(f"Exact values accuracy: {acc_exact:.4f}\n\n")
     
     configs = [
@@ -143,4 +147,4 @@ with open('analysis_output.txt', 'w', encoding='utf-8') as f:
             f.write(line + "\n")
         f.write(f"\n  Classification Report:\n{report}\n\n")
     
-print("Done! Results in analysis_output.txt")
+print(f"Done! Results in {out_path}")
